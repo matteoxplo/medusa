@@ -1,5 +1,18 @@
 # @medusajs/dashboard
 
+## 2.1.0
+
+### Patch Changes
+
+- [#10416](https://github.com/medusajs/medusa/pull/10416) [`18583ed56725b1faa8b19f7e46e8bc0a59dec33c`](https://github.com/medusajs/medusa/commit/18583ed56725b1faa8b19f7e46e8bc0a59dec33c) Thanks [@kasperkristensen](https://github.com/kasperkristensen)! - fix(dashboard): Fix broken number input in adjust inventory form
+
+- [#10412](https://github.com/medusajs/medusa/pull/10412) [`e8f4f7ea2ba33a747a61a13537e073c82a56d29e`](https://github.com/medusajs/medusa/commit/e8f4f7ea2ba33a747a61a13537e073c82a56d29e) Thanks [@kasperkristensen](https://github.com/kasperkristensen)! - fix(dashboard): Add default value to inventory item combobox
+
+- Updated dependencies [[`94f6265dfc074969f2f141a19f2fc33a6ab96af1`](https://github.com/medusajs/medusa/commit/94f6265dfc074969f2f141a19f2fc33a6ab96af1)]:
+  - @medusajs/icons@2.1.0
+  - @medusajs/admin-shared@2.1.0
+  - @medusajs/js-sdk@2.1.0
+
 ## 2.0.7
 
 ### Patch Changes
