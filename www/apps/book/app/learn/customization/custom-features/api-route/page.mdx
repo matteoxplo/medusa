@@ -8,7 +8,7 @@ export const metadata = {
 
 In the previous two chapters, you created a [Brand Module](../module/page.mdx) that added the concepts of brands to your application, then created a [workflow to create a brand](../workflow/page.mdx). In this chapter, you'll expose an API route that allows admin users to create a brand using the workflow from the previous chapter.
 
-An API Route is a REST endpoint that exposes commerce features to external applications, such as the admin dashboard, storefronts, or third-party systems.
+An API Route is an endpoint that acts as an entry point for other clients to interact with your Medusa customizations, such as the admin dashboard, storefronts, or third-party systems.
 
 The Medusa core application provides a set of [admin](!api!/admin) and [store](!api!/store) API routes out-of-the-box. You can also create custom API routes to expose your custom functionalities.
 
@@ -21,35 +21,7 @@ The Medusa core application provides a set of [admin](!api!/admin) and [store](!
   ]}
 />
 
-## 1. Create Validation Schema
-
-The API route you'll create accepts the brand's name in the request body. So, you'll first create a validation schema for the parameters expected in the request body.
-
-Medusa uses [Zod](https://zod.dev/) to create validation schemas. These schemas are then used to validate incoming request bodies or query parameters.
-
-<Note>
-
-Learn more about API route validation in [this chapter](../../../advanced-development/api-routes/validation/page.mdx).
-
-</Note>
-
-You create a validation schema in a `validators.{ts,js}` file under a sub-directory of the `src/api` directory. So, create the file `src/api/admin/brands/validators.ts` with the following content:
-
-![Directory structure of Medusa application after adding validators file](https://res.cloudinary.com/dza7lstvk/image/upload/v1732869806/Medusa%20Book/brand-route-dir-overview-1_yfyjss.jpg)
-
-```ts title="src/api/admin/brands/validators.ts"
-import { z } from "zod"
-
-export const PostAdminCreateBrand = z.object({
-  name: z.string()
-})
-```
-
-You export a validation schema that expects in the request body an object having a `name` property whose value is a string. You'll use this schema when creating the API route next.
-
----
-
-## 2. Create the API Route
+## 1. Create the API Route
 
 You create an API route in a `route.{ts,js}` file under a sub-directory of the `src/api` directory. The file exports API Route handler functions for at least one HTTP method (`GET`, `POST`, `DELETE`, etc…).
 
@@ -71,10 +43,10 @@ import {
 import { 
   createBrandWorkflow,
 } from "../../../workflows/create-brand"
-import { z } from "zod"
-import { PostAdminCreateBrand } from "./validators"
 
-type PostAdminCreateBrandType = z.infer<typeof PostAdminCreateBrand>
+type PostAdminCreateBrandType = {
+  name: string
+}
 
 export const POST = async (
   req: MedusaRequest<PostAdminCreateBrandType>,
@@ -95,13 +67,53 @@ The function receives two parameters: a `MedusaRequest` object to access request
 
 <Note title="Tip">
 
-`MedusaRequest` accepts the request body's type as a type argument. You use a type inferred from the Zod schema you created in the earlier step.
+`MedusaRequest` accepts the request body's type as a type argument.
 
 </Note>
 
 In the API route's handler, you execute the `createBrandWorkflow` by invoking it and passing the Medusa container `req.scope` as a parameter, then invoking its `run` method. You pass the workflow's input in the `input` property of the `run` method's parameter. You pass the request body's parameters using the `validatedBody` property of `MedusaRequest`.
 
 You return a JSON response with the created brand using the `res.json` method.
+
+---
+
+## 2. Create Validation Schema
+
+The API route you created accepts the brand's name in the request body. So, you'll create a schema used to validate incoming request body parameters.
+
+Medusa uses [Zod](https://zod.dev/) to create validation schemas. These schemas are then used to validate incoming request bodies or query parameters.
+
+<Note>
+
+Learn more about API route validation in [this chapter](../../../advanced-development/api-routes/validation/page.mdx).
+
+</Note>
+
+You create a validation schema in a TypeScript or JavaScript file under a sub-directory of the `src/api` directory. So, create the file `src/api/admin/brands/validators.ts` with the following content:
+
+![Directory structure of Medusa application after adding validators file](https://res.cloudinary.com/dza7lstvk/image/upload/v1732869806/Medusa%20Book/brand-route-dir-overview-1_yfyjss.jpg)
+
+```ts title="src/api/admin/brands/validators.ts"
+import { z } from "zod"
+
+export const PostAdminCreateBrand = z.object({
+  name: z.string()
+})
+```
+
+You export a validation schema that expects in the request body an object having a `name` property whose value is a string.
+
+You can then replace `PostAdminCreateBrandType` in `src/api/admin/brands/route.ts` with the following:
+
+```ts title="src/api/admin/brands/route.ts"
+// ...
+import { z } from "zod"
+import { PostAdminCreateBrand } from "./validators"
+
+type PostAdminCreateBrandType = z.infer<typeof PostAdminCreateBrand>
+
+// ...
+```
 
 ---
 
